@@ -1,4 +1,12 @@
 div.ui.container {
   display: flex;
   justify-content: center;
+  margin: 2em;
+}
+
+.main_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2em;
 }

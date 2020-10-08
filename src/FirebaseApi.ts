@@ -1,6 +1,8 @@
-import * as firebase from 'firebase'
-import { Dispatch, SetStateAction } from 'react'
-import { firebaseConfig } from './firebaseConfig'
+import * as firebase from 'firebase';
+import { Dispatch, SetStateAction } from 'react';
+import { IPlayer } from './App';
+import { playerName } from './constants';
+import { firebaseConfig } from './firebaseConfig';
 
 class FirebaseApi {
   private app: firebase.app.App;
@@ -11,7 +13,7 @@ class FirebaseApi {
     this.database = this.app.database();
   }
 
-  public fetchBoard(updateBoard: React.Dispatch<React.SetStateAction<string[]>>): void {
+  public getBoard(updateBoard: React.Dispatch<React.SetStateAction<string[]>>): void {
     this.database.ref('board').on('value', (snapshot) => {
       updateBoard(Object.values(snapshot.val()))
     })
@@ -23,8 +25,24 @@ class FirebaseApi {
     })
   }
 
+  /**
+   * Function resets board
+   * @param board Board to build a new object
+   */
+  public resetBoard(board: string[]): void {
+    let newBoard: { [key: number]: string } = {}
+    board.forEach((cell, index) => newBoard[index] = '')
+    this.database.ref('board').update({ ...newBoard })
+  }
+
+  public getPlayer(playerName: string, setPlayer: Dispatch<SetStateAction<IPlayer | undefined>>): void {
+    this.database.ref(playerName).on('value', (snapshot) => {
+      setPlayer(snapshot.val())
+    })
+  }
+
   public isPlayerActive(playerName: string, setPlayerStatus: Dispatch<SetStateAction<boolean | undefined>>): void {
-    this.database.ref(playerName).once('value').then((snapshot) => {
+    this.database.ref(playerName).on('value', (snapshot) => {
       setPlayerStatus(snapshot.val().isActive)
     })
   }
@@ -32,6 +50,60 @@ class FirebaseApi {
   public updatePlayerStatus(playerName: string, status: boolean): void {
     this.database.ref(playerName).update({
       isActive: status
+    })
+  }
+
+  public updatePlayerTurn(playerName: string, turn: boolean): void {
+    this.database.ref(playerName).update({
+      turn: turn
+    })
+  }
+
+  public getPlayerTurn(playerName: string, setTurn: Dispatch<SetStateAction<boolean | undefined>>): void {
+    this.database.ref(playerName).on('value', (snapshot) => {
+      setTurn(snapshot.val().turn)
+    })
+  }
+
+  public resetPlayer(playerName: string): void {
+    const newPlayer = { isActive: false, gamesPlayed: 0, losses: 0, ties: 0, turn: 0, wins: 0 }
+    this.database.ref(playerName).update({ ...newPlayer })
+  }
+
+  public emergencyReset(board: string[]): void {
+    this.resetPlayer('player1')
+    this.resetPlayer('player2')
+    this.resetBoard(board)
+  }
+
+  public updateWins(playerName: string, wins: number): void {
+    this.database.ref(playerName).update({ wins: wins + 1 })
+  }
+
+  public getWins(playerName: string, setWins: Dispatch<SetStateAction<number>>): void {
+    this.database.ref(playerName).on('value', (snapshot) => {
+      setWins(snapshot.val().wins)
+    })
+  }
+
+  public updateTies(ties: number): void {
+    this.database.ref(playerName.player1).update({ ties: ties + 1 })
+    this.database.ref(playerName.player2).update({ ties: ties + 1 })
+  }
+
+  public getTies(playerName: string, setTies: Dispatch<SetStateAction<number>>): void {
+    this.database.ref(playerName).on('value', (snapshot) => {
+      setTies(snapshot.val().ties)
+    })
+  }
+
+  public updateLosses(playerName: string, losses: number): void {
+    this.database.ref(playerName).update({ losses: losses + 1 })
+  }
+
+  public getLosses(playerName: string, setLosses: Dispatch<SetStateAction<number>>): void {
+    this.database.ref(playerName).on('value', (snapshot) => {
+      setLosses(snapshot.val().losses)
     })
   }
 }

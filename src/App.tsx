@@ -44,7 +44,7 @@ export const App = (): React.ReactElement => {
     firebaseApi.getBoard(setBoard)
     firebaseApi.isPlayerActive(PlayerName.PLAYER1, setPlayer1Status)
     firebaseApi.isPlayerActive(PlayerName.PlAYER2, setPlayer2Status)
-  }, [player1Status, player2Status])
+  }, [])
 
   React.useEffect(() => {
     window.onbeforeunload = confirmExit

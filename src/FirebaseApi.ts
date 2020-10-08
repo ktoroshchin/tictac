@@ -1,16 +1,16 @@
-import * as firebase from 'firebase';
-import { Dispatch, SetStateAction } from 'react';
-import { IPlayer } from './App';
-import { playerName } from './constants';
-import { firebaseConfig } from './firebaseConfig';
+import * as firebase from 'firebase'
+import { Dispatch, SetStateAction } from 'react'
+import { IPlayer } from './App'
+import { PlayerName } from './constants'
+import { firebaseConfig } from './firebaseConfig'
 
 class FirebaseApi {
-  private app: firebase.app.App;
-  private database: firebase.database.Database;
+  private app: firebase.app.App
+  private database: firebase.database.Database
 
   constructor() {
-    this.app = firebase.initializeApp(firebaseConfig);
-    this.database = this.app.database();
+    this.app = firebase.initializeApp(firebaseConfig)
+    this.database = this.app.database()
   }
 
   public getBoard(updateBoard: React.Dispatch<React.SetStateAction<string[]>>): void {
@@ -25,13 +25,9 @@ class FirebaseApi {
     })
   }
 
-  /**
-   * Function resets board
-   * @param board Board to build a new object
-   */
   public resetBoard(board: string[]): void {
     let newBoard: { [key: number]: string } = {}
-    board.forEach((cell, index) => newBoard[index] = '')
+    board.forEach((cell, index) => (newBoard[index] = ''))
     this.database.ref('board').update({ ...newBoard })
   }
 
@@ -55,7 +51,7 @@ class FirebaseApi {
 
   public updatePlayerTurn(playerName: string, turn: boolean): void {
     this.database.ref(playerName).update({
-      turn: turn
+      turn: turn,
     })
   }
 
@@ -66,13 +62,20 @@ class FirebaseApi {
   }
 
   public resetPlayer(playerName: string): void {
-    const newPlayer = { isActive: false, gamesPlayed: 0, losses: 0, ties: 0, turn: 0, wins: 0 }
+    const newPlayer = {
+      isActive: false,
+      gamesPlayed: 0,
+      losses: 0,
+      ties: 0,
+      turn: 0,
+      wins: 0,
+    }
     this.database.ref(playerName).update({ ...newPlayer })
   }
 
   public emergencyReset(board: string[]): void {
-    this.resetPlayer('player1')
-    this.resetPlayer('player2')
+    this.resetPlayer(PlayerName.PLAYER1)
+    this.resetPlayer(PlayerName.PlAYER2)
     this.resetBoard(board)
   }
 
@@ -87,8 +90,8 @@ class FirebaseApi {
   }
 
   public updateTies(ties: number): void {
-    this.database.ref(playerName.player1).update({ ties: ties + 1 })
-    this.database.ref(playerName.player2).update({ ties: ties + 1 })
+    this.database.ref(PlayerName.PLAYER1).update({ ties: ties + 1 })
+    this.database.ref(PlayerName.PlAYER2).update({ ties: ties + 1 })
   }
 
   public getTies(playerName: string, setTies: Dispatch<SetStateAction<number>>): void {

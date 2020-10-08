@@ -1,16 +1,17 @@
-import React from "react";
-import { Header } from "semantic-ui-react";
-import { IPlayer } from "./App";
+import React from 'react'
+import { Header } from 'semantic-ui-react'
+import { IPlayer } from './App'
 
 interface MessageProps {
     player?: IPlayer
     isOpponentActive?: boolean
 }
 
-export const Message = (messageProps: MessageProps) => {
+export const Message = (messageProps: MessageProps): React.ReactElement => {
     const { player, isOpponentActive } = messageProps
 
-    const warning = isOpponentActive ? '' : <div>
+    const warning = isOpponentActive ? '' : 
+    <div>
         <div>Your opponent is NOT online.</div>
         <div>
             <div>Wait for another player, if you just started the game</div>

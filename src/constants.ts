@@ -1,9 +1,9 @@
-export enum playerName  {
-  player1 = "player1",
-  player2 = "player2",
-};
+export enum PlayerName {
+  PLAYER1 = 'player1',
+  PlAYER2 = 'player2',
+}
 
-export enum cellValue {
-  X = "X",
-  O = "O",
-};
+export enum CellValue {
+  X = 'X',
+  O = 'O',
+}

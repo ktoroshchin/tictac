@@ -1,6 +1,6 @@
 export enum PlayerName {
   PLAYER1 = 'player1',
-  PlAYER2 = 'player2',
+  PLAYER2 = 'player2',
 }
 
 export enum CellValue {

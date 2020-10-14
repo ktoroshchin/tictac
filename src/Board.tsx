@@ -23,7 +23,7 @@ export const Board = (boardProps: BoardProps): React.ReactElement => {
     let winner: PlayerName | undefined = undefined
 
     const setResult = (cell: string): void => {
-      const opponent = player.name === PlayerName.PlAYER2 ? PlayerName.PLAYER1 : PlayerName.PlAYER2
+      const opponent = player.name === PlayerName.PLAYER2 ? PlayerName.PLAYER1 : PlayerName.PLAYER2
       winner = cell === player.value ? player.name : opponent
       if (winner === player.name) {
         firebaseApi.updateWins(player.name, player.wins)
@@ -80,7 +80,7 @@ export const Board = (boardProps: BoardProps): React.ReactElement => {
     // Set turn of the current player to false
     firebaseApi.updatePlayerTurn(player.name, false)
     // Set turn of an opponent to true
-    firebaseApi.updatePlayerTurn(player.name === PlayerName.PLAYER1 ? PlayerName.PlAYER2 : PlayerName.PLAYER1, true)
+    firebaseApi.updatePlayerTurn(player.name === PlayerName.PLAYER1 ? PlayerName.PLAYER2 : PlayerName.PLAYER1, true)
   }
 
   const renderBoard = (boardData: string[]): React.ReactElement[] => {

@@ -1,98 +1,88 @@
 import React from 'react'
-import 'semantic-ui-css/semantic.min.css'
-import { Button, Container } from 'semantic-ui-react'
-import './App.css'
-import { Board } from './Board'
 import { CellValue, PlayerName } from './constants'
 import { firebaseApi } from './FirebaseApi'
-import { GameStat } from './GameStat'
-import { Message } from './Message'
+import { Game } from './Game'
+import { GameIsFullMessage } from './GameIsFullMessage'
 
 export interface IPlayer {
-  name: PlayerName
-  value: CellValue
-  isActive: boolean
-  wins: number
-  losses: number
-  ties: number
-  gamesPlayed: number
-  turn: boolean
+    name: PlayerName
+    value: CellValue
+    isActive: boolean
+    wins: number
+    losses: number
+    ties: number
+    gamesPlayed: number
+    turn: boolean
+}
+
+export interface IPlayerStatus {
+  player1?: boolean
+  player2?: boolean
 }
 
 export const App = (): React.ReactElement => {
-  const [board, setBoard] = React.useState<string[]>([])
-  const [player1Status, setPlayer1Status] = React.useState<boolean | undefined>(undefined)
-  const [player2Status, setPlayer2Status] = React.useState<boolean | undefined>(undefined)
-  const [player, setPlayer] = React.useState<IPlayer | undefined>(undefined)
+    const [board, setBoard] = React.useState<string[]>([])
+    const [player1Status, setPlayer1Status] = React.useState<boolean | undefined>(undefined)
+    const [player2Status, setPlayer2Status] = React.useState<boolean | undefined>(undefined)
+    const [player, setPlayer] = React.useState<IPlayer | undefined>(undefined)
+    const [gameIsFull, setGameIsFull] = React.useState<boolean>(false)
 
-  const createPlayer = (name: string): void => {
-    firebaseApi.updatePlayerStatus(name, true)
-    // Player 1 always goes first
-    if (name === PlayerName.PLAYER1) firebaseApi.updatePlayerTurn(name, true)
-  }
+    const playerStatus: IPlayerStatus = {
+        player1: player1Status,
+        player2: player2Status 
+    } 
 
-  const setUpGame = (): void => {
-    if (player) return
-    if (player1Status === false || player2Status === false) {
-      const name = player1Status === false ? PlayerName.PLAYER1 : PlayerName.PlAYER2
-      firebaseApi.getPlayer(name, setPlayer)
-      createPlayer(name)
+    const createPlayer = (name: string): void => {
+        firebaseApi.updatePlayerStatus(name, true)
+        // Player 1 always goes first
+        if (name === PlayerName.PLAYER1) firebaseApi.updatePlayerTurn(name, true)
+      }
+    
+      const setUpGame = (): void => {
+        if (player) return
+        if (player1Status === false || player2Status === false) {
+          const name = player1Status === false ? PlayerName.PLAYER1 : PlayerName.PLAYER2
+          firebaseApi.getPlayer(name, setPlayer)
+          createPlayer(name)
+        } 
+
+      }
+
+    React.useEffect(() => {
+        firebaseApi.getBoard(setBoard)
+        firebaseApi.isPlayerActive(PlayerName.PLAYER1, setPlayer1Status)
+        firebaseApi.isPlayerActive(PlayerName.PLAYER2, setPlayer2Status)
+      }, [])
+
+    //Set full game status to prevent game with > 2 players
+    React.useEffect(() => {
+      if(player2Status) {
+        firebaseApi.updateGameFullStatus(true)
+      } 
+    }, [player2Status])
+
+    //Watch if game has > 2 players active
+    React.useEffect(() => {
+      firebaseApi.getGameFullStatus(setGameIsFull)
+    },[gameIsFull])
+
+    React.useEffect(() => {
+      window.onbeforeunload = confirmExit
+      function confirmExit() {
+          if(player?.name) firebaseApi.emergencyReset(board)
+      }
+    })
+    
+    setUpGame()
+
+    const renderGame = (): React.ReactElement => {
+        if(gameIsFull && !player?.name) {
+            return <GameIsFullMessage/>
+        } else 
+          return <Game board={board} gameIsFull={gameIsFull} playerStatus={playerStatus} player={player} />
     }
-  }
 
-  React.useEffect(() => {
-    firebaseApi.getBoard(setBoard)
-    firebaseApi.isPlayerActive(PlayerName.PLAYER1, setPlayer1Status)
-    firebaseApi.isPlayerActive(PlayerName.PlAYER2, setPlayer2Status)
-  }, [])
-
-  React.useEffect(() => {
-    window.onbeforeunload = confirmExit
-    function confirmExit() {
-      firebaseApi.emergencyReset(board)
-    }
-  })
-
-  setUpGame()
-
-  return (
-    <div className='main_content'>
-      <Message
-        player={player}
-        isOpponentActive={player?.name === PlayerName.PLAYER1 ? player2Status : player1Status}
-      />
-      <Container className='board_gamestat'>
-        {player ? (
-          <>
-            <Board data={board} player={player} />
-            <GameStat player={player} />
-          </>
-        ) : (
-          <></>
-        )}
-      </Container>
-      <Container>
-        <Button
-          disabled={player1Status && player2Status}
-          color='red'
-          onClick={() => {
-            firebaseApi.emergencyReset(board)
-            window.location.reload()
-          }}
-        >
-          Game Full Reset
-        </Button>
-        <Button 
-          color="blue" 
-          onClick={() => {
-            firebaseApi.resetBoard(board)
-            firebaseApi.updatePlayerTurn(PlayerName.PLAYER1, true)
-            firebaseApi.updatePlayerTurn(PlayerName.PlAYER2, true)
-          }}
-        >
-          Start new game
-        </Button>
-      </Container>
-    </div>
-  )
+    return (
+        renderGame()
+    )
 }

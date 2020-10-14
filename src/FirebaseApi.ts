@@ -74,8 +74,9 @@ class FirebaseApi {
   }
 
   public emergencyReset(board: string[]): void {
+    this.updateGameFullStatus(false)
     this.resetPlayer(PlayerName.PLAYER1)
-    this.resetPlayer(PlayerName.PlAYER2)
+    this.resetPlayer(PlayerName.PLAYER2)
     this.resetBoard(board)
   }
 
@@ -91,7 +92,7 @@ class FirebaseApi {
 
   public updateTies(ties: number): void {
     this.database.ref(PlayerName.PLAYER1).update({ ties: ties + 1 })
-    this.database.ref(PlayerName.PlAYER2).update({ ties: ties + 1 })
+    this.database.ref(PlayerName.PLAYER2).update({ ties: ties + 1 })
   }
 
   public getTies(playerName: string, setTies: Dispatch<SetStateAction<number>>): void {
@@ -108,6 +109,16 @@ class FirebaseApi {
     this.database.ref(playerName).on('value', (snapshot) => {
       setLosses(snapshot.val().losses)
     })
+  }
+
+  public getGameFullStatus(setGameStatus: Dispatch<SetStateAction<boolean>> ): void {
+    this.database.ref('game').on('value', (snapshot) => {
+      setGameStatus(snapshot.val().isFull)
+    })
+  }
+
+  public updateGameFullStatus(status?: boolean): void {
+    this.database.ref('game').update({ isFull: status })
   }
 }
 

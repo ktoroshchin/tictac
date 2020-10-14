@@ -16,3 +16,7 @@ div.ui.container {
   flex-direction: column;
   align-items: center;
 }
+
+.ui.container.hidden {
+  display: none;
+}

@@ -6,11 +6,11 @@ This is 2 player tic-tac-toe game, where 2 people can play from different comput
 
 ## Satck
 
-React
-TypeScript
-Node
-Firebase
-Semantic-UI
+1. React
+2. TypeScript
+3. Node
+4. Firebase
+5. Semantic-UI
 
 
 ## Run locally

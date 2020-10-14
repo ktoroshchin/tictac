@@ -4,7 +4,7 @@ Play [TIC-TAC-TOE](https://tictac-ef8e4.web.app/).
 
 This is 2 player tic-tac-toe game, where 2 people can play from different computers or browser windows
 
-## Satck
+## Stack
 
 1. React
 2. TypeScript

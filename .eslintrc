@@ -1,0 +1,42 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "extends": [
+        "plugin:@typescript-eslint/recommended", 
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module",
+        "env": { "es6": true },
+        "ecmaFeatures": { "jsx": true },
+        "project": "tsconfig.json"
+    },
+    "rules": {
+        "@typescript-eslint/explicit-function-return-type": "warn",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        //OFF because eslint does it by default
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/semi": [2, "never"],
+        "@typescript-eslint/quotes": ["error", "single"],
+        "indent": "off",
+        "@typescript-eslint/indent": ["error", 2],
+        "@typescript-eslint/member-delimiter-style": ["error", {
+            "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+            },
+            "singleline": {
+                "delimiter": "comma",
+                "requireLast": false
+            }
+        }],
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["error"]
+    }
+}

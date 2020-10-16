@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Button, Grid } from 'semantic-ui-react'
 import { IPlayer } from './App'
 import './Board.css'
@@ -15,13 +15,12 @@ export const Board = (boardProps: BoardProps): React.ReactElement => {
   const [turn, setTurn] = React.useState<boolean | undefined>(player.turn)
 
   React.useEffect(() => {
-      firebaseApi.getPlayerTurn(player.name, setTurn)  
+    firebaseApi.getPlayerTurn(player.name, setTurn)  
   }, [player.name])
   
   // check for a winner
   React.useEffect(() => {
     let winner: PlayerName | undefined = undefined
-
     const setResult = (cell: string): void => {
       const opponent = player.name === PlayerName.PLAYER2 ? PlayerName.PLAYER1 : PlayerName.PLAYER2
       winner = cell === player.value ? player.name : opponent
@@ -29,7 +28,7 @@ export const Board = (boardProps: BoardProps): React.ReactElement => {
         firebaseApi.updateWins(player.name, player.wins)
       } else {
         firebaseApi.updateLosses(player.name, player.losses)
-         // Disable the board after winner is determined
+        // Disable the board after winner is determined
         firebaseApi.updatePlayerTurn(player.name, false)
       }  
     }
@@ -72,7 +71,7 @@ export const Board = (boardProps: BoardProps): React.ReactElement => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   const handleClick = (index: number, value: string): void => {
@@ -90,7 +89,7 @@ export const Board = (boardProps: BoardProps): React.ReactElement => {
           <Button
             disabled={!turn || !!value}
             className='box'
-            onClick={() => handleClick(index, player.value)}
+            onClick={(): void => handleClick(index, player.value)}
           >
             {value}
           </Button>

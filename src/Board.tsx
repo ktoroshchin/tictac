@@ -88,7 +88,7 @@ export const Board = (boardProps: BoardProps): React.ReactElement => {
         <Grid.Column key={index}>
           <Button
             disabled={!turn || !!value}
-            className='box'
+            className='board_cell'
             onClick={(): void => handleClick(index, player.value)}
           >
             {value}

@@ -1,16 +1,20 @@
-.column{
-    padding: 0px !important;
-    width: 40%;
+.column {
+    display: flex;
+    /* justify-content: center; */
+    width: 30%;
+    padding: 0 !important;
 }
 
-.row{
+.row {
     display: flex;
     justify-content: center;
-    width: 50%;
 }
 
-.box {
+.ui.button.board_cell {
+    display: flex;
     justify-content: center;
-    border: 1px solid red;
-    height: 4em;
+    border: 1px solid blue;
+    height: 2.8em;
+    max-width: 2.5em;
+    margin: 0.5em 1em 0.5em 1em;
 }
